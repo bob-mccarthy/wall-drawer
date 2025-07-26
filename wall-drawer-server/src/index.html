@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Motor Control</title>
+    <script>
+    let currLeftPos = 0;
+    let currRightPos = 0
+    const moveMotor = (motorId, direction) => {
+        let numSteps = document.getElementById(motorId === 0 ? 'lmotorsteps' : 'rmotorsteps').value
+        console.log(numSteps)
+        if(motorId === 0){
+            // console.log(numSteps.innerHTML)
+            currLeftPos += parseInt(numSteps)*direction;
+            let currLeftPosText = document.querySelector("#lpos")
+            currLeftPosText.innerHTML = `Curr Left Motor Position: ${currLeftPos}`
+        }
+        else{
+            currRightPos += parseInt(numSteps)*direction;
+            let currRightPosText = document.querySelector("#rpos")
+            currRightPosText.innerHTML = `Curr Right Motor Position: ${currRightPos}`
+        }
+        let url = `http://192.168.0.100/move/${motorId}/${parseInt(numSteps)*direction}`
+        
+        const options = {
+            method: "POST"
+        }
+        fetch(url, options)
+    }
+    const moveMotorSync = () => {
+        let leftMotorPos = parseInt(document.getElementById('labspos').value)
+        let rightMotorPos = parseInt(document.getElementById('rabspos').value)
+        currLeftPos = leftMotorPos
+        currRightPos = rightMotorPos
+        let currLeftPosText = document.querySelector("#lpos")
+        let currRightPosText = document.querySelector("#rpos")
+        currLeftPosText.innerHTML = `Curr Left Motor Position: ${currLeftPos}`
+        currRightPosText.innerHTML = `Curr Right Motor Position: ${currRightPos}`
+        let url = `http://192.168.0.100/moveSync/${leftMotorPos}/${rightMotorPos}`
+        
+        const options = {
+            method: "POST"
+        }
+        fetch(url, options)
+    }
+  </script>
+  <style>
+    .formContainer{
+        display: flex;
+    }
+    p {
+        margin: 0
+    }
+  </style>
+  </head>
+  
+  <body>
+    <h1 id = "intro"> Stepper Motor Control</h1>
+    <p id = "lpos">Curr Left Motor Position: 0</p>
+    <p id = "rpos">Curr Right Motor Position: 0</p>
+    <h2>Relative Motor Move</h2>
+    <div style = "display: flex; gap: 20px">
+        <div class ="formContainer">
+            <p style="margin: 0px">Left Motor Step Size:</p>
+            <form >
+                <input type = "number" id = "lmotorsteps">
+            </form>
+            <button onclick="moveMotor(0,1)"> +</button>
+            <button onclick="moveMotor(0,-1)"> -</button>
+        </div>
+        <div class ="formContainer">
+            <p style="margin: 0px">Right Motor Step Size:</p>
+            <form >
+                <input type = "number" id = "rmotorsteps">
+            </form>
+            <button onclick="moveMotor(1,1)"> +</button>
+            <button onclick="moveMotor(1,-1)"> -</button>
+        </div>
+    </div>
+    <h2>Absolute Motor Position</h2>
+    <div style = "display: flex; gap: 20px">
+        <div class ="formContainer">
+            <p style="margin: 0px">Left Motor Position:</p>
+            <form >
+                <input type = "number" id = "labspos">
+            </form>
+        </div>
+        <div class ="formContainer">
+            <p style="margin: 0px">Right Motor Positon:</p>
+            <form >
+                <input type = "number" id = "rabspos">
+            </form>
+        </div>
+    </div>
+    <button onclick="moveMotorSync()">Go To</button>
+    
+    
+    
+  </body>
+</html>
