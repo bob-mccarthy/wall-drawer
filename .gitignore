@@ -3,3 +3,5 @@
 **/fp-info-cache
 **/*.gbr*
 **/*.drl
+**/*.lck
+**/*auto_saved_files*
